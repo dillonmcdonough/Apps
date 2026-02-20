@@ -146,7 +146,7 @@ class LoginView(tk.Frame):
 
         user = self._users[sel[0]]
         password = simpledialog.askstring(
-            "Password",
+            "Login Password",
             f"Enter password for {user.username}:",
             parent=self,
             show="*",
@@ -167,23 +167,23 @@ class LoginView(tk.Frame):
             return
 
         password = simpledialog.askstring(
-            "Create Password",
-            f"Create a password for {name}:",
+            "New Password",
+            f"Enter a password for {name}:",
             parent=self,
             show="*",
         )
         if password is None:
             return
         confirm_password = simpledialog.askstring(
-            "Confirm Password",
-            f"Re-enter password for {name}:",
+            "Confirm New Password",
+            f"Re-enter the new password for {name}:",
             parent=self,
             show="*",
         )
         if confirm_password is None:
             return
         if password != confirm_password:
-            messagebox.showerror("Error", "Passwords do not match.", parent=self)
+            messagebox.showerror("Password Error", "Passwords do not match.", parent=self)
             return
         if not password.strip():
             messagebox.showwarning("Input Error", "Password cannot be empty.", parent=self)

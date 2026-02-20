@@ -191,7 +191,7 @@ class MainView(tk.Frame):
 
     def _change_password(self):
         new_password = simpledialog.askstring(
-            "Change Password",
+            "New Password",
             "Enter your new password:",
             parent=self,
             show="*",
@@ -199,7 +199,7 @@ class MainView(tk.Frame):
         if new_password is None:
             return
         confirm_password = simpledialog.askstring(
-            "Confirm Password",
+            "Confirm New Password",
             "Re-enter your new password:",
             parent=self,
             show="*",
@@ -207,13 +207,13 @@ class MainView(tk.Frame):
         if confirm_password is None:
             return
         if new_password != confirm_password:
-            messagebox.showerror("Error", "Passwords do not match.", parent=self)
+            messagebox.showerror("Password Error", "Passwords do not match.", parent=self)
             return
         try:
             self.app.users.set_password(self.app.current_user.id, new_password)
-            messagebox.showinfo("Success", "Password updated.", parent=self)
+            messagebox.showinfo("Password Updated", "Password updated.", parent=self)
         except ValueError as e:
-            messagebox.showerror("Error", str(e), parent=self)
+            messagebox.showerror("Password Error", str(e), parent=self)
 
     # ── page switching ────────────────────────────────────────────────────────
 
