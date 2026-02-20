@@ -2,7 +2,7 @@
 Login / user-selection screen shown at app start.
 """
 import tkinter as tk
-from tkinter import messagebox
+from tkinter import messagebox, simpledialog
 from app import COLORS
 from views.widgets import RoundedButton, RoundedPanel
 
@@ -143,15 +143,43 @@ class LoginView(tk.Frame):
         if not sel:
             messagebox.showwarning("No Selection", "Please select a user to log in.", parent=self)
             return
-        self.app.login(self._users[sel[0]])
+
+        user = self._users[sel[0]]
+        password = simpledialog.askstring(
+            "Password",
+            f"Enter password for {user.username}:",
+            parent=self,
+            show="*",
+        )
+        if password is None:
+            return
+
+        if not self.app.users.authenticate(user.id, password):
+            messagebox.showerror("Login Failed", "Incorrect password.", parent=self)
+            return
+
+        self.app.login(user)
 
     def _create_user(self):
         name = self.new_user_var.get().strip()
         if not name:
             messagebox.showwarning("Input Error", "Please enter a username.", parent=self)
             return
+
+        password = simpledialog.askstring(
+            "Create Password",
+            f"Create a password for {name}:",
+            parent=self,
+            show="*",
+        )
+        if password is None:
+            return
+        if not password.strip():
+            messagebox.showwarning("Input Error", "Password cannot be empty.", parent=self)
+            return
+
         try:
-            self.app.users.create(name)
+            self.app.users.create(name, password)
             self.new_user_var.set("")
             self._load_users()
         except ValueError as e:

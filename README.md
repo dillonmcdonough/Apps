@@ -80,9 +80,11 @@ A desktop window should open.
 ### Login screen
 
 1. If this is your first time, type a username in **New User**.
-2. Click **Create**.
+2. Click **Create** and enter a password in the popup prompt.
 3. Select your username from the list.
-4. Click **Login**.
+4. Click **Login** and enter your password in the popup prompt.
+
+For users that existed before passwords were added, the default password is the same as the username.
 
 ### Vehicles page
 
