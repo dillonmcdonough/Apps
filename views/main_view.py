@@ -8,7 +8,7 @@ To add a new page:
   2. Add the matching import + elif branch in show_page().
 """
 import tkinter as tk
-from tkinter import ttk
+from tkinter import ttk, simpledialog, messagebox
 from app import COLORS
 from views.widgets import RoundedButton, RoundedPanel
 
@@ -67,6 +67,21 @@ class MainView(tk.Frame):
         tk.Label(badge_body, text=self.app.current_user.username,
                  font=("Segoe UI", 12, "bold"),
                  bg=COLORS["surface_alt"], fg=COLORS["text"]).pack(anchor="w")
+
+        RoundedButton(
+            badge_body,
+            text="Change Password",
+            command=self._change_password,
+            bg=COLORS["surface_alt"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["card"],
+            active_bg=COLORS["card"],
+            font=("Segoe UI", 9, "bold"),
+            text_anchor="w",
+            radius=10,
+            pad_y=6,
+            width=168,
+        ).pack(anchor="w", pady=(8, 0))
 
         tk.Frame(sb, bg=COLORS["border"], height=1).pack(fill=tk.X, padx=15, pady=12)
 
@@ -173,6 +188,32 @@ class MainView(tk.Frame):
         if self._vehicles and idx >= 0:
             self.app.current_vehicle = self._vehicles[idx]
             self.show_page(self._active_page.get())
+
+    def _change_password(self):
+        new_password = simpledialog.askstring(
+            "New Password",
+            "Enter your new password:",
+            parent=self,
+            show="*",
+        )
+        if new_password is None:
+            return
+        confirm_password = simpledialog.askstring(
+            "Confirm New Password",
+            "Re-enter your new password:",
+            parent=self,
+            show="*",
+        )
+        if confirm_password is None:
+            return
+        if new_password != confirm_password:
+            messagebox.showerror("Password Error", "Passwords do not match.", parent=self)
+            return
+        try:
+            self.app.users.set_password(self.app.current_user.id, new_password)
+            messagebox.showinfo("Password Updated", "Password updated.", parent=self)
+        except ValueError as e:
+            messagebox.showerror("Password Error", str(e), parent=self)
 
     # ── page switching ────────────────────────────────────────────────────────
 

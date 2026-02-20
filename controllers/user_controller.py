@@ -13,14 +13,35 @@ class UserController:
         row = self.db.fetchone("SELECT * FROM users WHERE id = ?", (user_id,))
         return User.from_row(row) if row else None
 
-    def create(self, username: str) -> User:
+    def create(self, username: str, password: str) -> User:
         username = username.strip()
+        password = password.strip()
         if not username:
             raise ValueError("Username cannot be empty.")
+        if not password:
+            raise ValueError("Password cannot be empty.")
         if self.db.fetchone("SELECT id FROM users WHERE username = ?", (username,)):
             raise ValueError(f"User '{username}' already exists.")
-        cursor = self.db.execute("INSERT INTO users (username) VALUES (?)", (username,))
+        cursor = self.db.execute(
+            "INSERT INTO users (username, password) VALUES (?, ?)",
+            (username, password),
+        )
         return self.get(cursor.lastrowid)
+
+    def authenticate(self, user_id: int, password: str) -> bool:
+        row = self.db.fetchone("SELECT password FROM users WHERE id = ?", (user_id,))
+        if not row:
+            return False
+        return row["password"] == password
+
+    def set_password(self, user_id: int, new_password: str):
+        new_password = new_password.strip()
+        if not new_password:
+            raise ValueError("Password cannot be empty.")
+        self.db.execute(
+            "UPDATE users SET password = ? WHERE id = ?",
+            (new_password, user_id),
+        )
 
     def delete(self, user_id: int):
         self.db.execute("DELETE FROM users WHERE id = ?", (user_id,))

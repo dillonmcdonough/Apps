@@ -3,6 +3,7 @@
 Torque Tracker is a desktop app for tracking vehicle odometer entries and viewing mileage stats.
 
 - Create or select a user
+- Password-protected user login (with simple local passwords)
 - Add and manage vehicles
 - Log mileage entries over time
 - View dashboard summaries (total miles tracked, number of logs, latest odometer)
@@ -80,9 +81,38 @@ A desktop window should open.
 ### Login screen
 
 1. If this is your first time, type a username in **New User**.
-2. Click **Create**.
-3. Select your username from the list.
-4. Click **Login**.
+2. Click **Create** and enter a password in the popup prompt.
+3. Re-enter the same password in the **Confirm Password** prompt.
+4. Select your username from the list.
+5. Click **Login** and enter your password in the popup prompt.
+
+If the two passwords do not match during account creation, the user is not created.
+
+For users that existed before passwords were added, the default password is the same as the username.
+
+### Change password (while logged in)
+
+1. Log in to your account.
+2. In the left sidebar user panel, click **Change Password**.
+3. Enter a new password.
+4. Re-enter it in **Confirm Password**.
+
+Notes:
+- You do **not** need to enter your old password.
+- If the two entries do not match, the password is not changed.
+- Empty passwords are not allowed.
+
+### Login for existing users
+
+1. Select your username from the user list.
+2. Click **Login**.
+3. Enter your password.
+
+If the password is incorrect, login is blocked and an error message is shown.
+
+For users that existed before passwords were added, the default password is the same as the username.
+
+After logging in, you can change your password from the left sidebar using **Change Password**.
 
 ### Vehicles page
 
@@ -157,6 +187,11 @@ Notes:
 1. Close the app
 2. Delete `torque_tracker.db`
 3. Start app again with `python3 main.py`
+
+### I forgot my password
+
+- There is currently no password reset flow.
+- For local/dev use, you can reset by deleting `torque_tracker.db` (this removes all app data).
 
 ---
 

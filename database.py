@@ -26,6 +26,7 @@ class Database:
             CREATE TABLE IF NOT EXISTS users (
                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
                 username    TEXT UNIQUE NOT NULL,
+                password    TEXT,
                 created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
@@ -51,7 +52,19 @@ class Database:
                 FOREIGN KEY (vehicle_id) REFERENCES vehicles(id) ON DELETE CASCADE
             );
         """)
+        self._migrate_users_password_column()
         self.conn.commit()
+
+    def _migrate_users_password_column(self):
+        cols = {row["name"] for row in self.fetchall("PRAGMA table_info(users)")}
+        if "password" not in cols:
+            self.execute("ALTER TABLE users ADD COLUMN password TEXT")
+
+        self.execute("""
+            UPDATE users
+            SET password = username
+            WHERE password IS NULL OR TRIM(password) = ''
+        """)
 
     # ── helpers ───────────────────────────────────────────────────────────────
 
