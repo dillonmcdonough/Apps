@@ -4,6 +4,7 @@ Vehicles — add, edit, delete vehicles for the current user.
 import tkinter as tk
 from tkinter import messagebox
 from app import COLORS
+from views.widgets import RoundedButton, RoundedPanel
 
 
 class VehiclesView(tk.Frame):
@@ -34,16 +35,34 @@ class VehiclesView(tk.Frame):
                  font=("Segoe UI", 14, "bold"),
                  bg=COLORS["bg"], fg=COLORS["text"]).pack(anchor="w", pady=(0, 10))
 
-        wrap = tk.Frame(parent, bg=COLORS["card"])
+        wrap = RoundedPanel(
+            parent,
+            bg=COLORS["surface"],
+            border_color=COLORS["border"],
+            radius=14,
+            pad_x=0,
+            pad_y=0,
+            stretch_content=True,
+        )
         wrap.pack(fill=tk.BOTH, expand=True)
+        wrap_body = wrap.content
 
-        sb = tk.Scrollbar(wrap)
+        sb = tk.Scrollbar(
+            wrap_body,
+            bg=COLORS["surface_alt"],
+            troughcolor=COLORS["bg"],
+            activebackground=COLORS["accent"],
+            highlightthickness=0,
+            bd=0,
+        )
         sb.pack(side=tk.RIGHT, fill=tk.Y)
 
         self._listbox = tk.Listbox(
-            wrap, bg=COLORS["card"], fg=COLORS["text"],
+            wrap_body, bg=COLORS["surface"], fg=COLORS["text"],
             selectbackground=COLORS["accent"], selectforeground="#fff",
-            font=("Segoe UI", 11), relief=tk.FLAT, highlightthickness=0,
+            font=("Segoe UI", 11), relief=tk.FLAT,
+            highlightthickness=0,
+            bd=0,
             yscrollcommand=sb.set,
         )
         self._listbox.pack(fill=tk.BOTH, expand=True)
@@ -53,15 +72,33 @@ class VehiclesView(tk.Frame):
         btn_row = tk.Frame(parent, bg=COLORS["bg"])
         btn_row.pack(fill=tk.X, pady=(10, 0))
 
-        tk.Button(btn_row, text="New Vehicle", command=self._clear_form,
-                  bg=COLORS["card"], fg=COLORS["text"],
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  padx=10, pady=6, cursor="hand2").pack(side=tk.LEFT)
+        RoundedButton(
+            btn_row,
+            text="New Vehicle",
+            command=self._clear_form,
+            bg=COLORS["surface_alt"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["card"],
+            active_bg=COLORS["card"],
+            font=("Segoe UI", 10),
+            radius=10,
+            pad_x=12,
+            pad_y=7,
+        ).pack(side=tk.LEFT)
 
-        tk.Button(btn_row, text="Delete", command=self._delete,
-                  bg=COLORS["danger"], fg="#fff",
-                  font=("Segoe UI", 10, "bold"), relief=tk.FLAT,
-                  padx=10, pady=6, cursor="hand2").pack(side=tk.RIGHT)
+        RoundedButton(
+            btn_row,
+            text="Delete",
+            command=self._delete,
+            bg=COLORS["danger"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["danger_hover"],
+            active_bg=COLORS["danger_hover"],
+            font=("Segoe UI", 10, "bold"),
+            radius=10,
+            pad_x=12,
+            pad_y=7,
+        ).pack(side=tk.RIGHT)
 
         self._load_list()
 
@@ -71,8 +108,16 @@ class VehiclesView(tk.Frame):
                                     bg=COLORS["bg"], fg=COLORS["text"])
         self._form_title.pack(anchor="w", pady=(0, 14))
 
-        card = tk.Frame(parent, bg=COLORS["sidebar"], padx=26, pady=24)
+        card = RoundedPanel(
+            parent,
+            bg=COLORS["surface"],
+            border_color=COLORS["border"],
+            radius=16,
+            pad_x=26,
+            pad_y=24,
+        )
         card.pack(fill=tk.X)
+        card_body = card.content
 
         FIELDS = [
             ("Nickname *",     "name"),
@@ -84,30 +129,52 @@ class VehiclesView(tk.Frame):
 
         self._vars = {}
         for i, (label, key) in enumerate(FIELDS):
-            tk.Label(card, text=label, font=("Segoe UI", 10),
-                     bg=COLORS["sidebar"], fg=COLORS["muted"]).grid(
+            tk.Label(card_body, text=label, font=("Segoe UI", 10),
+                     bg=COLORS["surface"], fg=COLORS["muted"]).grid(
                 row=i, column=0, sticky="w", pady=6)
             var = tk.StringVar()
-            tk.Entry(card, textvariable=var,
+            tk.Entry(card_body, textvariable=var,
                      bg=COLORS["input"], fg=COLORS["text"],
                      insertbackground=COLORS["text"],
-                     font=("Segoe UI", 11), relief=tk.FLAT, width=26).grid(
+                     font=("Segoe UI", 11), relief=tk.FLAT, width=26,
+                     highlightthickness=1,
+                     highlightbackground=COLORS["border"],
+                     highlightcolor=COLORS["accent"],
+                     bd=0).grid(
                 row=i, column=1, sticky="ew", padx=(16, 0), pady=6, ipady=6, ipadx=6)
             self._vars[key] = var
-        card.columnconfigure(1, weight=1)
+        card_body.columnconfigure(1, weight=1)
 
-        btn_row = tk.Frame(card, bg=COLORS["sidebar"])
+        btn_row = tk.Frame(card_body, bg=COLORS["surface"])
         btn_row.grid(row=len(FIELDS), column=0, columnspan=2, sticky="ew", pady=(18, 0))
 
-        tk.Button(btn_row, text="Clear", command=self._clear_form,
-                  bg=COLORS["card"], fg=COLORS["muted"],
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  padx=14, pady=8, cursor="hand2").pack(side=tk.LEFT)
+        RoundedButton(
+            btn_row,
+            text="Clear",
+            command=self._clear_form,
+            bg=COLORS["surface_alt"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["card"],
+            active_bg=COLORS["card"],
+            font=("Segoe UI", 10),
+            radius=10,
+            pad_x=16,
+            pad_y=8,
+        ).pack(side=tk.LEFT)
 
-        self._save_btn = tk.Button(btn_row, text="Add Vehicle", command=self._save,
-                                   bg=COLORS["accent"], fg="#fff",
-                                   font=("Segoe UI", 11, "bold"), relief=tk.FLAT,
-                                   padx=20, pady=8, cursor="hand2")
+        self._save_btn = RoundedButton(
+            btn_row,
+            text="Add Vehicle",
+            command=self._save,
+            bg=COLORS["accent"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["accent_hover"],
+            active_bg=COLORS["accent_hover"],
+            font=("Segoe UI", 11, "bold"),
+            radius=12,
+            pad_x=20,
+            pad_y=8,
+        )
         self._save_btn.pack(side=tk.RIGHT)
 
     # ── logic ─────────────────────────────────────────────────────────────────
@@ -130,14 +197,14 @@ class VehiclesView(tk.Frame):
         self._vars["year"].set(str(v.year) if v.year else "")
         self._vars["license_plate"].set(v.license_plate)
         self._form_title.configure(text="Edit Vehicle")
-        self._save_btn.configure(text="Update Vehicle")
+        self._save_btn.set_text("Update Vehicle")
 
     def _clear_form(self):
         self._editing = None
         for var in self._vars.values():
             var.set("")
         self._form_title.configure(text="Add New Vehicle")
-        self._save_btn.configure(text="Add Vehicle")
+        self._save_btn.set_text("Add Vehicle")
         self._listbox.selection_clear(0, tk.END)
 
     def _save(self):

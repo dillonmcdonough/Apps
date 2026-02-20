@@ -4,6 +4,7 @@ Dashboard — overview of the selected vehicle and all user vehicles.
 import tkinter as tk
 from tkinter import ttk
 from app import COLORS
+from views.widgets import RoundedPanel
 
 
 class DashboardView(tk.Frame):
@@ -70,14 +71,22 @@ class DashboardView(tk.Frame):
         row = tk.Frame(f, bg=COLORS["bg"])
         row.pack(fill=tk.X, padx=24, pady=(0, 20))
         for label, value in stats:
-            card = tk.Frame(row, bg=COLORS["card"], padx=22, pady=16)
+            card = RoundedPanel(
+                row,
+                bg=COLORS["surface"],
+                border_color=COLORS["border"],
+                radius=16,
+                pad_x=22,
+                pad_y=16,
+            )
             card.pack(side=tk.LEFT, padx=(0, 14))
-            tk.Label(card, text=value,
+            card_body = card.content
+            tk.Label(card_body, text=value,
                      font=("Segoe UI", 26, "bold"),
-                     bg=COLORS["card"], fg=COLORS["accent"]).pack(anchor="w")
-            tk.Label(card, text=label,
+                     bg=COLORS["surface"], fg=COLORS["accent"]).pack(anchor="w")
+            tk.Label(card_body, text=label,
                      font=("Segoe UI", 9),
-                     bg=COLORS["card"], fg=COLORS["muted"]).pack(anchor="w")
+                     bg=COLORS["surface"], fg=COLORS["muted"]).pack(anchor="w")
 
         # ── recent logs ───────────────────────────────────────────────────────
         self._section(f, "Recent Mileage Logs")
@@ -91,18 +100,26 @@ class DashboardView(tk.Frame):
                      fg=COLORS["muted"]).pack(anchor="w", pady=6)
         else:
             for log in logs:
-                r = tk.Frame(logs_f, bg=COLORS["card"], padx=16, pady=10)
+                r = RoundedPanel(
+                    logs_f,
+                    bg=COLORS["surface"],
+                    border_color=COLORS["border"],
+                    radius=12,
+                    pad_x=16,
+                    pad_y=10,
+                )
                 r.pack(fill=tk.X, pady=3)
-                tk.Label(r, text=log.date, width=13, anchor="w",
+                row_body = r.content
+                tk.Label(row_body, text=log.date, width=13, anchor="w",
                          font=("Segoe UI", 10),
-                         bg=COLORS["card"], fg=COLORS["muted"]).pack(side=tk.LEFT)
-                tk.Label(r, text=f"{log.odometer_reading:,.1f} mi",
+                         bg=COLORS["surface"], fg=COLORS["muted"]).pack(side=tk.LEFT)
+                tk.Label(row_body, text=f"{log.odometer_reading:,.1f} mi",
                          font=("Segoe UI", 11, "bold"),
-                         bg=COLORS["card"], fg=COLORS["text"]).pack(side=tk.LEFT, padx=12)
+                         bg=COLORS["surface"], fg=COLORS["text"]).pack(side=tk.LEFT, padx=12)
                 if log.notes:
-                    tk.Label(r, text=log.notes,
+                    tk.Label(row_body, text=log.notes,
                              font=("Segoe UI", 10),
-                             bg=COLORS["card"], fg=COLORS["muted"]).pack(side=tk.LEFT)
+                             bg=COLORS["surface"], fg=COLORS["muted"]).pack(side=tk.LEFT)
 
         # ── all vehicles summary ───────────────────────────────────────────────
         self._section(f, "All Your Vehicles")
@@ -116,19 +133,27 @@ class DashboardView(tk.Frame):
                      fg=COLORS["muted"]).pack(anchor="w")
         else:
             for v in all_vehicles:
-                vr = tk.Frame(vf, bg=COLORS["card"], padx=16, pady=11)
+                vr = RoundedPanel(
+                    vf,
+                    bg=COLORS["surface"],
+                    border_color=COLORS["border"],
+                    radius=12,
+                    pad_x=16,
+                    pad_y=11,
+                )
                 vr.pack(fill=tk.X, pady=3)
+                vr_body = vr.content
 
                 indicator = "▶ " if (self.app.current_vehicle and v.id == self.app.current_vehicle.id) else "    "
-                tk.Label(vr, text=f"{indicator}{v.display_name()}",
+                tk.Label(vr_body, text=f"{indicator}{v.display_name()}",
                          font=("Segoe UI", 11, "bold"),
-                         bg=COLORS["card"], fg=COLORS["text"]).pack(side=tk.LEFT)
+                         bg=COLORS["surface"], fg=COLORS["text"]).pack(side=tk.LEFT)
 
                 v_miles = self.app.mileage.total_miles(v.id)
                 v_count = self.app.mileage.log_count(v.id)
-                tk.Label(vr, text=f"{v_miles:,.0f} mi tracked  ·  {v_count} logs",
+                tk.Label(vr_body, text=f"{v_miles:,.0f} mi tracked  ·  {v_count} logs",
                          font=("Segoe UI", 10),
-                         bg=COLORS["card"], fg=COLORS["muted"]).pack(side=tk.RIGHT)
+                         bg=COLORS["surface"], fg=COLORS["muted"]).pack(side=tk.RIGHT)
 
     def _section(self, parent, title: str):
         tk.Label(parent, text=title,

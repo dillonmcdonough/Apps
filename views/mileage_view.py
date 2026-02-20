@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import date
 from app import COLORS
+from views.widgets import RoundedButton, RoundedPanel
 
 
 class MileageView(tk.Frame):
@@ -37,34 +38,46 @@ class MileageView(tk.Frame):
                  font=("Segoe UI", 11), bg=COLORS["bg"],
                  fg=COLORS["muted"]).pack(anchor="w", pady=(0, 8))
 
-        card = tk.Frame(top, bg=COLORS["sidebar"], padx=22, pady=16)
+        card = RoundedPanel(
+            top,
+            bg=COLORS["surface"],
+            border_color=COLORS["border"],
+            radius=16,
+            pad_x=22,
+            pad_y=16,
+        )
         card.pack(fill=tk.X)
+        card_body = card.content
 
-        tk.Label(card, text="New Mileage Entry",
+        tk.Label(card_body, text="New Mileage Entry",
                  font=("Segoe UI", 12, "bold"),
-                 bg=COLORS["sidebar"], fg=COLORS["text"]).pack(anchor="w", pady=(0, 10))
+                 bg=COLORS["surface"], fg=COLORS["text"]).pack(anchor="w", pady=(0, 10))
 
-        fields_row = tk.Frame(card, bg=COLORS["sidebar"])
+        fields_row = tk.Frame(card_body, bg=COLORS["surface"])
         fields_row.pack(fill=tk.X)
 
         # Date
-        df = tk.Frame(fields_row, bg=COLORS["sidebar"])
+        df = tk.Frame(fields_row, bg=COLORS["surface"])
         df.pack(side=tk.LEFT, padx=(0, 18))
         tk.Label(df, text="Date (YYYY-MM-DD)",
                  font=("Segoe UI", 9),
-                 bg=COLORS["sidebar"], fg=COLORS["muted"]).pack(anchor="w")
+             bg=COLORS["surface"], fg=COLORS["muted"]).pack(anchor="w")
         self._date_var = tk.StringVar(value=str(date.today()))
         tk.Entry(df, textvariable=self._date_var,
                  bg=COLORS["input"], fg=COLORS["text"],
                  insertbackground=COLORS["text"],
-                 font=("Segoe UI", 11), relief=tk.FLAT, width=15).pack(ipady=6, ipadx=6)
+             font=("Segoe UI", 11), relief=tk.FLAT, width=15,
+             highlightthickness=1,
+             highlightbackground=COLORS["border"],
+             highlightcolor=COLORS["accent"],
+             bd=0).pack(ipady=6, ipadx=6)
 
         # Odometer
-        of = tk.Frame(fields_row, bg=COLORS["sidebar"])
+        of = tk.Frame(fields_row, bg=COLORS["surface"])
         of.pack(side=tk.LEFT, padx=(0, 18))
         tk.Label(of, text="Odometer (miles)",
                  font=("Segoe UI", 9),
-                 bg=COLORS["sidebar"], fg=COLORS["muted"]).pack(anchor="w")
+             bg=COLORS["surface"], fg=COLORS["muted"]).pack(anchor="w")
         self._odo_var = tk.StringVar()
 
         # Pre-fill with latest + 1 as a hint
@@ -75,26 +88,42 @@ class MileageView(tk.Frame):
         tk.Entry(of, textvariable=self._odo_var,
                  bg=COLORS["input"], fg=COLORS["text"],
                  insertbackground=COLORS["text"],
-                 font=("Segoe UI", 11), relief=tk.FLAT, width=16).pack(ipady=6, ipadx=6)
+                 font=("Segoe UI", 11), relief=tk.FLAT, width=16,
+                 highlightthickness=1,
+                 highlightbackground=COLORS["border"],
+                 highlightcolor=COLORS["accent"],
+                 bd=0).pack(ipady=6, ipadx=6)
 
         # Notes
-        nf = tk.Frame(fields_row, bg=COLORS["sidebar"])
+        nf = tk.Frame(fields_row, bg=COLORS["surface"])
         nf.pack(side=tk.LEFT, fill=tk.X, expand=True, padx=(0, 18))
         tk.Label(nf, text="Notes (optional)",
                  font=("Segoe UI", 9),
-                 bg=COLORS["sidebar"], fg=COLORS["muted"]).pack(anchor="w")
+             bg=COLORS["surface"], fg=COLORS["muted"]).pack(anchor="w")
         self._notes_var = tk.StringVar()
         tk.Entry(nf, textvariable=self._notes_var,
                  bg=COLORS["input"], fg=COLORS["text"],
                  insertbackground=COLORS["text"],
-                 font=("Segoe UI", 11), relief=tk.FLAT).pack(fill=tk.X, ipady=6, ipadx=6)
+             font=("Segoe UI", 11), relief=tk.FLAT,
+             highlightthickness=1,
+             highlightbackground=COLORS["border"],
+             highlightcolor=COLORS["accent"],
+             bd=0).pack(fill=tk.X, ipady=6, ipadx=6)
 
         # Add button
-        tk.Button(fields_row, text="Add Log", command=self._add_log,
-                  bg=COLORS["accent"], fg="#fff",
-                  font=("Segoe UI", 11, "bold"), relief=tk.FLAT,
-                  padx=18, pady=8, cursor="hand2",
-                  activebackground="#c73652").pack(side=tk.LEFT, anchor="s")
+        RoundedButton(
+            fields_row,
+            text="Add Log",
+            command=self._add_log,
+            bg=COLORS["accent"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["accent_hover"],
+            active_bg=COLORS["accent_hover"],
+            font=("Segoe UI", 11, "bold"),
+            radius=12,
+            pad_x=18,
+            pad_y=8,
+        ).pack(side=tk.LEFT, anchor="s")
 
     def _build_history(self):
         bottom = tk.Frame(self, bg=COLORS["bg"])
@@ -105,16 +134,34 @@ class MileageView(tk.Frame):
         tk.Label(hdr, text="Mileage History",
                  font=("Segoe UI", 13, "bold"),
                  bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
-        tk.Button(hdr, text="Delete Selected", command=self._delete_log,
-                  bg=COLORS["danger"], fg="#fff",
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  padx=10, pady=4, cursor="hand2").pack(side=tk.RIGHT)
+        RoundedButton(
+            hdr,
+            text="Delete Selected",
+            command=self._delete_log,
+            bg=COLORS["danger"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["danger_hover"],
+            active_bg=COLORS["danger_hover"],
+            font=("Segoe UI", 10),
+            radius=10,
+            pad_x=12,
+            pad_y=6,
+        ).pack(side=tk.RIGHT)
 
-        tree_wrap = tk.Frame(bottom, bg=COLORS["card"])
+        tree_wrap = RoundedPanel(
+            bottom,
+            bg=COLORS["surface"],
+            border_color=COLORS["border"],
+            radius=14,
+            pad_x=0,
+            pad_y=0,
+            stretch_content=True,
+        )
         tree_wrap.pack(fill=tk.BOTH, expand=True)
+        tree_body = tree_wrap.content
 
         cols = ("date", "odometer", "notes")
-        self._tree = ttk.Treeview(tree_wrap, columns=cols,
+        self._tree = ttk.Treeview(tree_body, columns=cols,
                                   show="headings", selectmode="browse")
 
         self._tree.heading("date",     text="Date",              anchor="center")
@@ -125,7 +172,7 @@ class MileageView(tk.Frame):
         self._tree.column("odometer", width=160, anchor="center", stretch=False)
         self._tree.column("notes",    width=500, anchor="w")
 
-        vsb = ttk.Scrollbar(tree_wrap, orient="vertical", command=self._tree.yview)
+        vsb = ttk.Scrollbar(tree_body, orient="vertical", command=self._tree.yview)
         self._tree.configure(yscrollcommand=vsb.set)
 
         self._tree.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)

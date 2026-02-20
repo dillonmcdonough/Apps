@@ -12,15 +12,21 @@ from controllers import UserController, VehicleController, MileageController
 
 # ── shared colour palette ─────────────────────────────────────────────────────
 COLORS = {
-    "bg":      "#1a1a2e",
-    "sidebar": "#16213e",
-    "card":    "#0f3460",
-    "accent":  "#e94560",
-    "text":    "#e2e8f0",
-    "muted":   "#94a3b8",
-    "input":   "#0d2137",
-    "danger":  "#c0392b",
-    "success": "#27ae60",
+    "bg":      "#0b1220",
+    "sidebar": "#0f1a2f",
+    "card":    "#15233d",
+    "surface": "#111c32",
+    "surface_alt": "#1a2a47",
+    "border":  "#253554",
+    "accent":  "#4f8cff",
+    "accent_hover": "#3f79e6",
+    "text":    "#e9f1ff",
+    "muted":   "#9bb0cf",
+    "input":   "#1a2b48",
+    "danger":  "#d95b6a",
+    "danger_hover": "#c34c5b",
+    "success": "#2fbf8f",
+    "button_text": "#f8fbff",
 }
 
 
@@ -29,33 +35,49 @@ def apply_global_styles():
     style = ttk.Style()
     style.theme_use("clam")
 
+    style.configure("TFrame", background=COLORS["bg"])
+    style.configure("TLabel", background=COLORS["bg"], foreground=COLORS["text"])
+
     style.configure("TCombobox",
-                    fieldbackground=COLORS["card"],
-                    background=COLORS["card"],
+              fieldbackground=COLORS["input"],
+              background=COLORS["input"],
                     foreground=COLORS["text"],
                     selectbackground=COLORS["accent"],
-                    selectforeground=COLORS["text"])
-    style.map("TCombobox", fieldbackground=[("readonly", COLORS["card"])])
+              selectforeground=COLORS["button_text"],
+              bordercolor=COLORS["border"],
+              arrowcolor=COLORS["muted"],
+              lightcolor=COLORS["input"],
+              darkcolor=COLORS["input"])
+    style.map("TCombobox",
+          fieldbackground=[("readonly", COLORS["input"])],
+          foreground=[("readonly", COLORS["text"])],
+          selectbackground=[("readonly", COLORS["accent"])])
 
     style.configure("Treeview",
-                    background=COLORS["card"],
+              background=COLORS["surface"],
                     foreground=COLORS["text"],
-                    fieldbackground=COLORS["card"],
+              fieldbackground=COLORS["surface"],
                     rowheight=30,
+              bordercolor=COLORS["border"],
+              lightcolor=COLORS["surface"],
+              darkcolor=COLORS["surface"],
                     font=("Segoe UI", 10))
     style.configure("Treeview.Heading",
-                    background=COLORS["input"],
-                    foreground=COLORS["muted"],
+              background=COLORS["surface_alt"],
+              foreground=COLORS["text"],
                     font=("Segoe UI", 10, "bold"),
                     relief="flat")
     style.map("Treeview",
               background=[("selected", COLORS["accent"])],
-              foreground=[("selected", "#ffffff")])
+          foreground=[("selected", COLORS["button_text"])])
 
     style.configure("Vertical.TScrollbar",
-                    background=COLORS["card"],
-                    troughcolor=COLORS["bg"],
-                    arrowcolor=COLORS["muted"])
+              background=COLORS["surface_alt"],
+              troughcolor=COLORS["bg"],
+              arrowcolor=COLORS["text"],
+              bordercolor=COLORS["bg"],
+              lightcolor=COLORS["surface_alt"],
+              darkcolor=COLORS["surface_alt"])
 
 
 # ── app ───────────────────────────────────────────────────────────────────────

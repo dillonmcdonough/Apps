@@ -10,6 +10,7 @@ To add a new page:
 import tkinter as tk
 from tkinter import ttk
 from app import COLORS
+from views.widgets import RoundedButton, RoundedPanel
 
 
 class MainView(tk.Frame):
@@ -25,6 +26,8 @@ class MainView(tk.Frame):
         super().__init__(parent, bg=COLORS["bg"])
         self.app = app
         self._active_page = tk.StringVar(value="dashboard")
+        self._nav_default_font = ("Segoe UI", 11)
+        self._nav_active_font = ("Segoe UI", 11, "bold")
         self.pack(fill=tk.BOTH, expand=True)
         self._build()
         self.show_page("dashboard")
@@ -36,69 +39,100 @@ class MainView(tk.Frame):
         self._build_content_area()
 
     def _build_sidebar(self):
-        sb = tk.Frame(self, bg=COLORS["sidebar"], width=210)
+        sb = tk.Frame(self, bg=COLORS["surface"], width=218)
         sb.pack(side=tk.LEFT, fill=tk.Y)
         sb.pack_propagate(False)
         self._sidebar = sb
 
         # Logo
         tk.Label(sb, text="TORQUE", font=("Segoe UI", 20, "bold"),
-                 bg=COLORS["sidebar"], fg=COLORS["accent"]).pack(pady=(22, 0))
+                 bg=COLORS["surface"], fg=COLORS["accent"]).pack(pady=(22, 0))
         tk.Label(sb, text="TRACKER", font=("Segoe UI", 11, "bold"),
-                 bg=COLORS["sidebar"], fg=COLORS["text"]).pack()
-        tk.Frame(sb, bg=COLORS["card"], height=1).pack(fill=tk.X, padx=15, pady=12)
+                 bg=COLORS["surface"], fg=COLORS["text"]).pack()
+        tk.Frame(sb, bg=COLORS["border"], height=1).pack(fill=tk.X, padx=15, pady=12)
 
         # Logged-in user badge
-        badge = tk.Frame(sb, bg=COLORS["card"], padx=12, pady=10)
+        badge = RoundedPanel(
+            sb,
+            bg=COLORS["surface_alt"],
+            border_color=COLORS["border"],
+            radius=14,
+            pad_x=12,
+            pad_y=10,
+        )
         badge.pack(fill=tk.X, padx=12)
-        tk.Label(badge, text="Logged in as", font=("Segoe UI", 8),
-                 bg=COLORS["card"], fg=COLORS["muted"]).pack(anchor="w")
-        tk.Label(badge, text=self.app.current_user.username,
+        badge_body = badge.content
+        tk.Label(badge_body, text="Logged in as", font=("Segoe UI", 8),
+                 bg=COLORS["surface_alt"], fg=COLORS["muted"]).pack(anchor="w")
+        tk.Label(badge_body, text=self.app.current_user.username,
                  font=("Segoe UI", 12, "bold"),
-                 bg=COLORS["card"], fg=COLORS["text"]).pack(anchor="w")
+                 bg=COLORS["surface_alt"], fg=COLORS["text"]).pack(anchor="w")
 
-        tk.Frame(sb, bg=COLORS["card"], height=1).pack(fill=tk.X, padx=15, pady=12)
+        tk.Frame(sb, bg=COLORS["border"], height=1).pack(fill=tk.X, padx=15, pady=12)
 
         # Nav buttons
         self._nav_btns = {}
         for label, page_id in self.PAGES:
-            btn = tk.Button(sb, text=f"  {label}",
-                            command=lambda p=page_id: self.show_page(p),
-                            bg=COLORS["sidebar"], fg=COLORS["text"],
-                            font=("Segoe UI", 11), relief=tk.FLAT,
-                            anchor="w", padx=8, pady=11, cursor="hand2",
-                            activebackground=COLORS["card"],
-                            activeforeground=COLORS["accent"])
-            btn.pack(fill=tk.X)
+            btn = RoundedButton(
+                sb,
+                text=label,
+                command=lambda p=page_id: self.show_page(p),
+                bg=COLORS["surface"],
+                fg=COLORS["button_text"],
+                hover_bg=COLORS["surface_alt"],
+                active_bg=COLORS["surface_alt"],
+                font=self._nav_default_font,
+                text_anchor="w",
+                radius=12,
+                pad_y=10,
+                width=190,
+            )
+            btn.pack(fill=tk.X, padx=10, pady=3)
             self._nav_btns[page_id] = btn
 
         # Logout at bottom
-        tk.Frame(sb, bg=COLORS["card"], height=1).pack(fill=tk.X, padx=15, side=tk.BOTTOM, pady=5)
-        tk.Button(sb, text="  Logout", command=self.app.logout,
-                  bg=COLORS["sidebar"], fg=COLORS["muted"],
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  anchor="w", padx=8, pady=9, cursor="hand2",
-                  activebackground=COLORS["card"]).pack(side=tk.BOTTOM, fill=tk.X)
+        tk.Frame(sb, bg=COLORS["border"], height=1).pack(fill=tk.X, padx=15, side=tk.BOTTOM, pady=5)
+        RoundedButton(
+            sb,
+            text="Logout",
+            command=self.app.logout,
+            bg=COLORS["surface"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["surface_alt"],
+            active_bg=COLORS["surface_alt"],
+            font=("Segoe UI", 10),
+            text_anchor="w",
+            radius=12,
+            pad_y=8,
+            width=190,
+        ).pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=(0, 10))
 
     def _build_content_area(self):
         content = tk.Frame(self, bg=COLORS["bg"])
         content.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
 
         # Top bar
-        topbar = tk.Frame(content, bg=COLORS["sidebar"], height=58)
-        topbar.pack(fill=tk.X)
-        topbar.pack_propagate(False)
+        topbar = RoundedPanel(
+            content,
+            bg=COLORS["surface"],
+            border_color=COLORS["border"],
+            radius=14,
+            pad_x=18,
+            pad_y=10,
+        )
+        topbar.pack(fill=tk.X, padx=12, pady=(12, 0))
+        topbar_body = topbar.content
 
-        self._page_title = tk.Label(topbar, text="",
+        self._page_title = tk.Label(topbar_body, text="",
                                     font=("Segoe UI", 16, "bold"),
-                                    bg=COLORS["sidebar"], fg=COLORS["text"])
+                        bg=COLORS["surface"], fg=COLORS["text"])
         self._page_title.pack(side=tk.LEFT, padx=22, pady=14)
 
         # Vehicle selector (right side of top bar)
-        vs = tk.Frame(topbar, bg=COLORS["sidebar"])
+        vs = tk.Frame(topbar_body, bg=COLORS["surface"])
         vs.pack(side=tk.RIGHT, padx=18, pady=10)
         tk.Label(vs, text="Vehicle:", font=("Segoe UI", 10),
-                 bg=COLORS["sidebar"], fg=COLORS["muted"]).pack(side=tk.LEFT, padx=(0, 6))
+             bg=COLORS["surface"], fg=COLORS["muted"]).pack(side=tk.LEFT, padx=(0, 6))
         self._vehicle_var = tk.StringVar()
         self._vehicle_combo = ttk.Combobox(vs, textvariable=self._vehicle_var,
                                            width=28, state="readonly")
@@ -148,11 +182,21 @@ class MainView(tk.Frame):
         # Highlight active nav button
         for pid, btn in self._nav_btns.items():
             if pid == page_id:
-                btn.configure(bg=COLORS["card"], fg=COLORS["accent"],
-                              font=("Segoe UI", 11, "bold"))
+                btn.set_font(("Segoe UI", 11, "bold"))
+                btn.set_colors(
+                    bg=COLORS["surface_alt"],
+                    fg=COLORS["button_text"],
+                    hover_bg=COLORS["accent"],
+                    active_bg=COLORS["accent_hover"],
+                )
             else:
-                btn.configure(bg=COLORS["sidebar"], fg=COLORS["text"],
-                              font=("Segoe UI", 11))
+                btn.set_font(("Segoe UI", 11))
+                btn.set_colors(
+                    bg=COLORS["surface"],
+                    fg=COLORS["button_text"],
+                    hover_bg=COLORS["surface_alt"],
+                    active_bg=COLORS["surface_alt"],
+                )
 
         titles = {p[1]: p[0] for p in self.PAGES}
         self._page_title.configure(text=titles.get(page_id, page_id.title()))
