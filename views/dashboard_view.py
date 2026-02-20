@@ -29,9 +29,12 @@ class DashboardView(tk.Frame):
         canvas.pack(side=tk.LEFT, fill=tk.BOTH, expand=True)
         vsb.pack(side=tk.RIGHT, fill=tk.Y)
 
-        # Mouse-wheel scrolling
-        canvas.bind_all("<MouseWheel>",
-                        lambda e: canvas.yview_scroll(-1 * (e.delta // 120), "units"))
+        # Mouse-wheel scrolling (scoped to this canvas, avoids stale global callbacks)
+        canvas.bind("<Enter>", lambda _: canvas.focus_set())
+        canvas.bind(
+            "<MouseWheel>",
+            lambda e: canvas.yview_scroll(-1 * (e.delta // 120), "units"),
+        )
 
         self._fill(inner)
 
