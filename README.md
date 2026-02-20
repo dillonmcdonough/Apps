@@ -82,7 +82,7 @@ A desktop window should open.
 
 1. If this is your first time, type a username in **New User**.
 2. Click **Create** and enter a password in the popup prompt.
-3. Re-enter the same password in the **Confirm Password** prompt.
+3. Re-enter the same password in the **Confirm New Password** prompt.
 4. Select your username from the list.
 5. Click **Login** and enter your password in the popup prompt.
 
@@ -95,12 +95,27 @@ For users that existed before passwords were added, the default password is the 
 1. Log in to your account.
 2. In the left sidebar user panel, click **Change Password**.
 3. Enter a new password.
-4. Re-enter it in **Confirm Password**.
+4. Re-enter it in **Confirm New Password**.
 
 Notes:
 - You do **not** need to enter your old password.
 - If the two entries do not match, the password is not changed.
 - Empty passwords are not allowed.
+
+### Delete user account (while logged in)
+
+1. Log in to the user account you want to delete.
+2. In the left sidebar user panel, click **Delete User**.
+3. Confirm the warning prompt.
+4. Enter the account password.
+5. Re-enter the same password in the **Confirm Password Again** prompt.
+6. Confirm the final permanent deletion prompt.
+
+Notes:
+- Deletion is permanent.
+- If the two password entries do not match, deletion is cancelled.
+- If the password is incorrect, deletion is blocked.
+- Deleting a user removes the user record (username/password) and all associated vehicles and mileage logs.
 
 ### Login for existing users
 
