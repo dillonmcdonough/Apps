@@ -2,6 +2,109 @@ import tkinter as tk
 from tkinter import font as tkfont
 
 
+class RoundedPanel(tk.Canvas):
+    def __init__(
+        self,
+        parent,
+        bg,
+        border_color=None,
+        radius=14,
+        pad_x=12,
+        pad_y=10,
+        stretch_content=False,
+    ):
+        super().__init__(
+            parent,
+            bg=parent.cget("bg"),
+            highlightthickness=0,
+            bd=0,
+        )
+        self._fill = bg
+        self._border = border_color if border_color else bg
+        self._radius = max(4, radius)
+        self._pad_x = max(0, pad_x)
+        self._pad_y = max(0, pad_y)
+        self._stretch_content = stretch_content
+
+        self.content = tk.Frame(self, bg=bg, bd=0, highlightthickness=0)
+        self._window_id = self.create_window(
+            self._pad_x,
+            self._pad_y,
+            anchor="nw",
+            window=self.content,
+        )
+
+        self.bind("<Configure>", self._on_configure)
+        self.content.bind("<Configure>", self._on_content_configure)
+        self._draw(10, 10)
+
+    def _rounded_points(self, x1, y1, x2, y2, radius):
+        return [
+            x1 + radius,
+            y1,
+            x2 - radius,
+            y1,
+            x2,
+            y1,
+            x2,
+            y1 + radius,
+            x2,
+            y2 - radius,
+            x2,
+            y2,
+            x2 - radius,
+            y2,
+            x1 + radius,
+            y2,
+            x1,
+            y2,
+            x1,
+            y2 - radius,
+            x1,
+            y1 + radius,
+            x1,
+            y1,
+        ]
+
+    def _draw(self, width, height):
+        self.delete("bg_shape")
+        r = max(4, min(self._radius, width // 2, height // 2))
+        points = self._rounded_points(1, 1, width - 1, height - 1, r)
+        self.create_polygon(
+            points,
+            smooth=True,
+            fill=self._fill,
+            outline=self._border,
+            width=1,
+            tags="bg_shape",
+        )
+        self.tag_lower("bg_shape")
+
+    def _on_configure(self, event):
+        width = max(8, event.width)
+        height = max(8, event.height)
+        self._draw(width, height)
+
+        self.coords(self._window_id, self._pad_x, self._pad_y)
+        inner_w = max(1, width - (self._pad_x * 2))
+        if self._stretch_content:
+            inner_h = max(1, height - (self._pad_y * 2))
+            self.itemconfigure(self._window_id, width=inner_w, height=inner_h)
+        else:
+            self.itemconfigure(self._window_id, width=inner_w)
+
+    def _on_content_configure(self, _event):
+        if self._stretch_content:
+            return
+
+        desired_h = self.content.winfo_reqheight() + (self._pad_y * 2)
+        desired_w = self.content.winfo_reqwidth() + (self._pad_x * 2)
+
+        current_w = max(1, self.winfo_width())
+        target_w = max(current_w, desired_w)
+        self.configure(width=target_w, height=desired_h)
+
+
 class RoundedButton(tk.Canvas):
     def __init__(
         self,
