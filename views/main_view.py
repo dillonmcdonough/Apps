@@ -83,6 +83,21 @@ class MainView(tk.Frame):
             width=168,
         ).pack(anchor="w", pady=(8, 0))
 
+        RoundedButton(
+            badge_body,
+            text="Delete User",
+            command=self._delete_user_account,
+            bg=COLORS["danger"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["danger_hover"],
+            active_bg=COLORS["danger_hover"],
+            font=("Segoe UI", 9, "bold"),
+            text_anchor="w",
+            radius=10,
+            pad_y=6,
+            width=168,
+        ).pack(anchor="w", pady=(8, 0))
+
         tk.Frame(sb, bg=COLORS["border"], height=1).pack(fill=tk.X, padx=15, pady=12)
 
         # Nav buttons
@@ -214,6 +229,52 @@ class MainView(tk.Frame):
             messagebox.showinfo("Password Updated", "Password updated.", parent=self)
         except ValueError as e:
             messagebox.showerror("Password Error", str(e), parent=self)
+
+    def _delete_user_account(self):
+        user = self.app.current_user
+        if not messagebox.askyesno(
+            "Delete User",
+            "This will permanently delete your user and all related data. Continue?",
+            parent=self,
+        ):
+            return
+
+        password = simpledialog.askstring(
+            "Confirm Password",
+            f"Enter password for {user.username} to continue:",
+            parent=self,
+            show="*",
+        )
+        if password is None:
+            return
+
+        confirm_password = simpledialog.askstring(
+            "Confirm Password Again",
+            f"Re-enter password for {user.username}:",
+            parent=self,
+            show="*",
+        )
+        if confirm_password is None:
+            return
+
+        if password != confirm_password:
+            messagebox.showerror("Delete User Error", "Passwords do not match.", parent=self)
+            return
+
+        if not self.app.users.authenticate(user.id, password):
+            messagebox.showerror("Delete User Error", "Incorrect password.", parent=self)
+            return
+
+        if not messagebox.askyesno(
+            "Final Confirmation",
+            "Final check: permanently delete this user and all associated data?",
+            parent=self,
+        ):
+            return
+
+        self.app.users.delete(user.id)
+        messagebox.showinfo("User Deleted", "User and all associated data were deleted.", parent=self)
+        self.app.logout()
 
     # ── page switching ────────────────────────────────────────────────────────
 

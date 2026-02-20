@@ -102,6 +102,21 @@ Notes:
 - If the two entries do not match, the password is not changed.
 - Empty passwords are not allowed.
 
+### Delete user account (while logged in)
+
+1. Log in to the user account you want to delete.
+2. In the left sidebar user panel, click **Delete User**.
+3. Confirm the warning prompt.
+4. Enter the account password.
+5. Re-enter the same password in the second confirm prompt.
+6. Confirm the final permanent deletion prompt.
+
+Notes:
+- Deletion is permanent.
+- If the two password entries do not match, deletion is cancelled.
+- If the password is incorrect, deletion is blocked.
+- Deleting a user removes the user record (username/password) and all associated vehicles and mileage logs.
+
 ### Login for existing users
 
 1. Select your username from the user list.
