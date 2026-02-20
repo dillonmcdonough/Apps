@@ -27,6 +27,7 @@ class Database:
                 id          INTEGER PRIMARY KEY AUTOINCREMENT,
                 username    TEXT UNIQUE NOT NULL,
                 password    TEXT,
+                is_admin    INTEGER DEFAULT 0,
                 created_at  TIMESTAMP DEFAULT CURRENT_TIMESTAMP
             );
 
@@ -53,6 +54,7 @@ class Database:
             );
         """)
         self._migrate_users_password_column()
+        self._migrate_admin_column()
         self.conn.commit()
 
     def _migrate_users_password_column(self):
@@ -65,6 +67,15 @@ class Database:
             SET password = username
             WHERE password IS NULL OR TRIM(password) = ''
         """)
+
+    def _migrate_admin_column(self):
+        cols = {row["name"] for row in self.fetchall("PRAGMA table_info(users)")}
+        if "is_admin" not in cols:
+            self.execute("ALTER TABLE users ADD COLUMN is_admin INTEGER DEFAULT 0")
+            # Promote the earliest user to admin for existing databases
+            first_user = self.fetchone("SELECT id FROM users ORDER BY id LIMIT 1")
+            if first_user:
+                self.execute("UPDATE users SET is_admin = 1 WHERE id = ?", (first_user["id"],))
 
     # ── helpers ───────────────────────────────────────────────────────────────
 

@@ -102,7 +102,10 @@ class MainView(tk.Frame):
 
         # Nav buttons
         self._nav_btns = {}
-        for label, page_id in self.PAGES:
+        pages = list(self.PAGES)
+        if getattr(self.app.current_user, "is_admin", False):
+            pages.append(("Admin", "admin"))
+        for label, page_id in pages:
             btn = RoundedButton(
                 sb,
                 text=label,
@@ -316,4 +319,7 @@ class MainView(tk.Frame):
         elif page_id == "mileage":
             from views.mileage_view import MileageView
             MileageView(self._page_frame, self.app, self)
+        elif page_id == "admin":
+            from views.admin_view import AdminView
+            AdminView(self._page_frame, self.app, self)
         # Add new pages here ↑
