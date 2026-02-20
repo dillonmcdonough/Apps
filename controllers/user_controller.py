@@ -34,5 +34,14 @@ class UserController:
             return False
         return row["password"] == password
 
+    def set_password(self, user_id: int, new_password: str):
+        new_password = new_password.strip()
+        if not new_password:
+            raise ValueError("Password cannot be empty.")
+        self.db.execute(
+            "UPDATE users SET password = ? WHERE id = ?",
+            (new_password, user_id),
+        )
+
     def delete(self, user_id: int):
         self.db.execute("DELETE FROM users WHERE id = ?", (user_id,))

@@ -86,6 +86,8 @@ A desktop window should open.
 
 For users that existed before passwords were added, the default password is the same as the username.
 
+After logging in, you can change your password from the left sidebar using **Change Password**.
+
 ### Vehicles page
 
 1. Go to **Vehicles** from the left sidebar.
