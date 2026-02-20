@@ -10,6 +10,7 @@ To add a new page:
 import tkinter as tk
 from tkinter import ttk
 from app import COLORS
+from views.widgets import RoundedButton
 
 
 class MainView(tk.Frame):
@@ -25,6 +26,8 @@ class MainView(tk.Frame):
         super().__init__(parent, bg=COLORS["bg"])
         self.app = app
         self._active_page = tk.StringVar(value="dashboard")
+        self._nav_default_font = ("Segoe UI", 11)
+        self._nav_active_font = ("Segoe UI", 11, "bold")
         self.pack(fill=tk.BOTH, expand=True)
         self._build()
         self.show_page("dashboard")
@@ -62,23 +65,39 @@ class MainView(tk.Frame):
         # Nav buttons
         self._nav_btns = {}
         for label, page_id in self.PAGES:
-            btn = tk.Button(sb, text=f"  {label}",
-                            command=lambda p=page_id: self.show_page(p),
-                            bg=COLORS["sidebar"], fg=COLORS["text"],
-                            font=("Segoe UI", 11), relief=tk.FLAT,
-                            anchor="w", padx=8, pady=11, cursor="hand2",
-                            activebackground=COLORS["card"],
-                            activeforeground=COLORS["accent"])
-            btn.pack(fill=tk.X)
+            btn = RoundedButton(
+                sb,
+                text=label,
+                command=lambda p=page_id: self.show_page(p),
+                bg=COLORS["sidebar"],
+                fg=COLORS["button_text"],
+                hover_bg=COLORS["card"],
+                active_bg=COLORS["card"],
+                font=self._nav_default_font,
+                text_anchor="w",
+                radius=12,
+                pad_y=10,
+                width=190,
+            )
+            btn.pack(fill=tk.X, padx=10, pady=3)
             self._nav_btns[page_id] = btn
 
         # Logout at bottom
         tk.Frame(sb, bg=COLORS["card"], height=1).pack(fill=tk.X, padx=15, side=tk.BOTTOM, pady=5)
-        tk.Button(sb, text="  Logout", command=self.app.logout,
-                  bg=COLORS["sidebar"], fg=COLORS["muted"],
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  anchor="w", padx=8, pady=9, cursor="hand2",
-                  activebackground=COLORS["card"]).pack(side=tk.BOTTOM, fill=tk.X)
+        RoundedButton(
+            sb,
+            text="Logout",
+            command=self.app.logout,
+            bg=COLORS["sidebar"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["card"],
+            active_bg=COLORS["card"],
+            font=("Segoe UI", 10),
+            text_anchor="w",
+            radius=12,
+            pad_y=8,
+            width=190,
+        ).pack(side=tk.BOTTOM, fill=tk.X, padx=10, pady=(0, 10))
 
     def _build_content_area(self):
         content = tk.Frame(self, bg=COLORS["bg"])
@@ -148,11 +167,21 @@ class MainView(tk.Frame):
         # Highlight active nav button
         for pid, btn in self._nav_btns.items():
             if pid == page_id:
-                btn.configure(bg=COLORS["card"], fg=COLORS["accent"],
-                              font=("Segoe UI", 11, "bold"))
+                btn.set_font(("Segoe UI", 11, "bold"))
+                btn.set_colors(
+                    bg=COLORS["card"],
+                    fg=COLORS["button_text"],
+                    hover_bg=COLORS["accent"],
+                    active_bg=COLORS["accent_hover"],
+                )
             else:
-                btn.configure(bg=COLORS["sidebar"], fg=COLORS["text"],
-                              font=("Segoe UI", 11))
+                btn.set_font(("Segoe UI", 11))
+                btn.set_colors(
+                    bg=COLORS["sidebar"],
+                    fg=COLORS["button_text"],
+                    hover_bg=COLORS["card"],
+                    active_bg=COLORS["card"],
+                )
 
         titles = {p[1]: p[0] for p in self.PAGES}
         self._page_title.configure(text=titles.get(page_id, page_id.title()))

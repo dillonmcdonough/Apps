@@ -4,6 +4,7 @@ Vehicles — add, edit, delete vehicles for the current user.
 import tkinter as tk
 from tkinter import messagebox
 from app import COLORS
+from views.widgets import RoundedButton
 
 
 class VehiclesView(tk.Frame):
@@ -53,15 +54,33 @@ class VehiclesView(tk.Frame):
         btn_row = tk.Frame(parent, bg=COLORS["bg"])
         btn_row.pack(fill=tk.X, pady=(10, 0))
 
-        tk.Button(btn_row, text="New Vehicle", command=self._clear_form,
-                  bg=COLORS["card"], fg=COLORS["text"],
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  padx=10, pady=6, cursor="hand2").pack(side=tk.LEFT)
+        RoundedButton(
+            btn_row,
+            text="New Vehicle",
+            command=self._clear_form,
+            bg=COLORS["card"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["sidebar"],
+            active_bg=COLORS["sidebar"],
+            font=("Segoe UI", 10),
+            radius=10,
+            pad_x=12,
+            pad_y=7,
+        ).pack(side=tk.LEFT)
 
-        tk.Button(btn_row, text="Delete", command=self._delete,
-                  bg=COLORS["danger"], fg="#fff",
-                  font=("Segoe UI", 10, "bold"), relief=tk.FLAT,
-                  padx=10, pady=6, cursor="hand2").pack(side=tk.RIGHT)
+        RoundedButton(
+            btn_row,
+            text="Delete",
+            command=self._delete,
+            bg=COLORS["danger"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["danger_hover"],
+            active_bg=COLORS["danger_hover"],
+            font=("Segoe UI", 10, "bold"),
+            radius=10,
+            pad_x=12,
+            pad_y=7,
+        ).pack(side=tk.RIGHT)
 
         self._load_list()
 
@@ -99,15 +118,33 @@ class VehiclesView(tk.Frame):
         btn_row = tk.Frame(card, bg=COLORS["sidebar"])
         btn_row.grid(row=len(FIELDS), column=0, columnspan=2, sticky="ew", pady=(18, 0))
 
-        tk.Button(btn_row, text="Clear", command=self._clear_form,
-                  bg=COLORS["card"], fg=COLORS["muted"],
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  padx=14, pady=8, cursor="hand2").pack(side=tk.LEFT)
+        RoundedButton(
+            btn_row,
+            text="Clear",
+            command=self._clear_form,
+            bg=COLORS["card"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["input"],
+            active_bg=COLORS["input"],
+            font=("Segoe UI", 10),
+            radius=10,
+            pad_x=16,
+            pad_y=8,
+        ).pack(side=tk.LEFT)
 
-        self._save_btn = tk.Button(btn_row, text="Add Vehicle", command=self._save,
-                                   bg=COLORS["accent"], fg="#fff",
-                                   font=("Segoe UI", 11, "bold"), relief=tk.FLAT,
-                                   padx=20, pady=8, cursor="hand2")
+        self._save_btn = RoundedButton(
+            btn_row,
+            text="Add Vehicle",
+            command=self._save,
+            bg=COLORS["accent"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["accent_hover"],
+            active_bg=COLORS["accent_hover"],
+            font=("Segoe UI", 11, "bold"),
+            radius=12,
+            pad_x=20,
+            pad_y=8,
+        )
         self._save_btn.pack(side=tk.RIGHT)
 
     # ── logic ─────────────────────────────────────────────────────────────────
@@ -130,14 +167,14 @@ class VehiclesView(tk.Frame):
         self._vars["year"].set(str(v.year) if v.year else "")
         self._vars["license_plate"].set(v.license_plate)
         self._form_title.configure(text="Edit Vehicle")
-        self._save_btn.configure(text="Update Vehicle")
+        self._save_btn.set_text("Update Vehicle")
 
     def _clear_form(self):
         self._editing = None
         for var in self._vars.values():
             var.set("")
         self._form_title.configure(text="Add New Vehicle")
-        self._save_btn.configure(text="Add Vehicle")
+        self._save_btn.set_text("Add Vehicle")
         self._listbox.selection_clear(0, tk.END)
 
     def _save(self):

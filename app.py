@@ -16,11 +16,14 @@ COLORS = {
     "sidebar": "#16213e",
     "card":    "#0f3460",
     "accent":  "#e94560",
+    "accent_hover": "#cf3851",
     "text":    "#e2e8f0",
     "muted":   "#94a3b8",
     "input":   "#0d2137",
     "danger":  "#c0392b",
+    "danger_hover": "#a93226",
     "success": "#27ae60",
+    "button_text": "#f8fafc",
 }
 
 

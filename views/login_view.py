@@ -4,6 +4,7 @@ Login / user-selection screen shown at app start.
 import tkinter as tk
 from tkinter import messagebox
 from app import COLORS
+from views.widgets import RoundedButton
 
 
 class LoginView(tk.Frame):
@@ -55,12 +56,18 @@ class LoginView(tk.Frame):
         sb.config(command=self.listbox.yview)
         self.listbox.bind("<Double-Button-1>", lambda _: self._login())
 
-        tk.Button(card, text="  Login  ", command=self._login,
-                  bg=COLORS["accent"], fg="#fff",
-                  font=("Segoe UI", 11, "bold"), relief=tk.FLAT,
-                  padx=10, pady=7, cursor="hand2",
-                  activebackground="#c73652", activeforeground="#fff"
-                  ).pack(fill=tk.X, pady=(10, 0))
+        RoundedButton(
+            card,
+            text="Login",
+            command=self._login,
+            bg=COLORS["accent"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["accent_hover"],
+            active_bg=COLORS["accent_hover"],
+            font=("Segoe UI", 11, "bold"),
+            radius=12,
+            pad_y=8,
+        ).pack(fill=tk.X, pady=(10, 0))
 
         # ── Divider ───────────────────────────────────────────────────────────
         tk.Frame(card, bg=COLORS["card"], height=1).pack(fill=tk.X, pady=18)
@@ -80,10 +87,19 @@ class LoginView(tk.Frame):
         entry.pack(side=tk.LEFT, fill=tk.X, expand=True, ipady=6, ipadx=6)
         entry.bind("<Return>", lambda _: self._create_user())
 
-        tk.Button(row, text="Create", command=self._create_user,
-                  bg=COLORS["card"], fg=COLORS["accent"],
-                  font=("Segoe UI", 10, "bold"), relief=tk.FLAT,
-                  padx=12, pady=6, cursor="hand2").pack(side=tk.LEFT, padx=(8, 0))
+        RoundedButton(
+            row,
+            text="Create",
+            command=self._create_user,
+            bg=COLORS["card"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["sidebar"],
+            active_bg=COLORS["sidebar"],
+            font=("Segoe UI", 10, "bold"),
+            radius=10,
+            pad_x=14,
+            pad_y=7,
+        ).pack(side=tk.LEFT, padx=(8, 0))
 
     # ── logic ─────────────────────────────────────────────────────────────────
 

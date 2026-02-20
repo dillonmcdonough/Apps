@@ -5,6 +5,7 @@ import tkinter as tk
 from tkinter import ttk, messagebox
 from datetime import date
 from app import COLORS
+from views.widgets import RoundedButton
 
 
 class MileageView(tk.Frame):
@@ -90,11 +91,19 @@ class MileageView(tk.Frame):
                  font=("Segoe UI", 11), relief=tk.FLAT).pack(fill=tk.X, ipady=6, ipadx=6)
 
         # Add button
-        tk.Button(fields_row, text="Add Log", command=self._add_log,
-                  bg=COLORS["accent"], fg="#fff",
-                  font=("Segoe UI", 11, "bold"), relief=tk.FLAT,
-                  padx=18, pady=8, cursor="hand2",
-                  activebackground="#c73652").pack(side=tk.LEFT, anchor="s")
+        RoundedButton(
+            fields_row,
+            text="Add Log",
+            command=self._add_log,
+            bg=COLORS["accent"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["accent_hover"],
+            active_bg=COLORS["accent_hover"],
+            font=("Segoe UI", 11, "bold"),
+            radius=12,
+            pad_x=18,
+            pad_y=8,
+        ).pack(side=tk.LEFT, anchor="s")
 
     def _build_history(self):
         bottom = tk.Frame(self, bg=COLORS["bg"])
@@ -105,10 +114,19 @@ class MileageView(tk.Frame):
         tk.Label(hdr, text="Mileage History",
                  font=("Segoe UI", 13, "bold"),
                  bg=COLORS["bg"], fg=COLORS["text"]).pack(side=tk.LEFT)
-        tk.Button(hdr, text="Delete Selected", command=self._delete_log,
-                  bg=COLORS["danger"], fg="#fff",
-                  font=("Segoe UI", 10), relief=tk.FLAT,
-                  padx=10, pady=4, cursor="hand2").pack(side=tk.RIGHT)
+        RoundedButton(
+            hdr,
+            text="Delete Selected",
+            command=self._delete_log,
+            bg=COLORS["danger"],
+            fg=COLORS["button_text"],
+            hover_bg=COLORS["danger_hover"],
+            active_bg=COLORS["danger_hover"],
+            font=("Segoe UI", 10),
+            radius=10,
+            pad_x=12,
+            pad_y=6,
+        ).pack(side=tk.RIGHT)
 
         tree_wrap = tk.Frame(bottom, bg=COLORS["card"])
         tree_wrap.pack(fill=tk.BOTH, expand=True)
