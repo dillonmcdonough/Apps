@@ -174,6 +174,17 @@ class LoginView(tk.Frame):
         )
         if password is None:
             return
+        confirm_password = simpledialog.askstring(
+            "Confirm Password",
+            f"Re-enter password for {name}:",
+            parent=self,
+            show="*",
+        )
+        if confirm_password is None:
+            return
+        if password != confirm_password:
+            messagebox.showerror("Error", "Passwords do not match.", parent=self)
+            return
         if not password.strip():
             messagebox.showwarning("Input Error", "Password cannot be empty.", parent=self)
             return

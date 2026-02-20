@@ -198,6 +198,17 @@ class MainView(tk.Frame):
         )
         if new_password is None:
             return
+        confirm_password = simpledialog.askstring(
+            "Confirm Password",
+            "Re-enter your new password:",
+            parent=self,
+            show="*",
+        )
+        if confirm_password is None:
+            return
+        if new_password != confirm_password:
+            messagebox.showerror("Error", "Passwords do not match.", parent=self)
+            return
         try:
             self.app.users.set_password(self.app.current_user.id, new_password)
             messagebox.showinfo("Success", "Password updated.", parent=self)
